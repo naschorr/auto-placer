@@ -13,7 +13,7 @@ class PlaceAutomator {
 	}
 
 	buildSourceCanvas(imageUrl){
-		let canvasElement = document.getElementById(this.name + "-canvas");
+		let canvasElement = document.createElement("canvas");
 		let canvas = canvasElement.getContext("2d");
 		let image = new Image();
 		image.onload = function(){
