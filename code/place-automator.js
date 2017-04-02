@@ -10,6 +10,8 @@ class PlaceAutomator {
 		this.longWait = 300;	// 5 minutes
 
 		this.canvas = this.buildSourceCanvas(imageUrl);
+
+		this.main();
 	}
 
 	buildSourceCanvas(imageUrl){
@@ -81,12 +83,14 @@ class PlaceAutomator {
 	}
 
 	main(){
-		if(place.enabled){
-			this.drawRandomTile();
-			setTimeout(this.main(), this.longWait * 1000);
-		}
-		else{
-			setTimeout(this.main(), this.shortWait * 1000);
+		while(true){
+			if(place.enabled){
+				this.drawRandomTile();
+				setTimeout(function(){}, this.longWait * 1000);
+			}
+			else{
+				setTimeout(function(){}, this.shortWait * 1000);
+			}
 		}
 	}
 }
