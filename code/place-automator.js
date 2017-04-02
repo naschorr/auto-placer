@@ -10,20 +10,21 @@ class PlaceAutomator {
 		this.longWait = 300;	// 5 minutes
 
 		this.canvas = this.buildSourceCanvas(imageUrl);
+		console.log(this.canvas);
 
 		this.main();
 	}
 
 	buildSourceCanvas(imageUrl){
-		let canvasElement = document.createElement("canvas");
-		let canvas = canvasElement.getContext("2d");
-		let image = new Image();
-		image.onload = function(){
-			canvas.drawImage(image, 0, 0);
+		let canvas = document.createElement("canvas");
+		let ctx = canvas.getContext("2d");
+		let img = new Image();
+		img.onload = function(){
+			ctx.drawImage(img, 0, 0);
 		};
-		image.src = imageUrl;
+		img.src = imageUrl;
 
-		return canvas;
+		return ctx;
 	}
 
 	getPixelAt(x, y){
@@ -69,13 +70,13 @@ class PlaceAutomator {
 			return Math.floor(Math.random() * (max - min)) + min;
 		};
 
-		let x = this.x + randInclusive(0, this.canvas.canvas.clientWidth);
-		let y = this.y + randInclusive(0, this.canvas.canvas.clientHeight);
-		let pixel = this.getPixelAt(x, y);
+		let x = randInclusive(0, this.canvas.canvas.clientWidth);
+		let y = randInclusive(0, this.canvas.canvas.clientHeight);
+		let pixel = this.getPixelAt(x, y).data;
 
 		// Make sure the pixel isn't transparent
 		if(pixel[3] === 255){
-			this.drawTile(this.rgbToPlaceColorIndex(pixel[0], pixel[1], pixel[2]), x, y);
+			this.drawTile(this.rgbToPlaceColorIndex(pixel[0], pixel[1], pixel[2]), this.x + x, this.y + y);
 		}
 	}
 
