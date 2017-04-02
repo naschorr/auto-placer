@@ -9,7 +9,7 @@ class PlaceAutomator {
 		this.shortWait = 5;		// 5 seconds
 		this.longWait = 300;	// 5 minutes
 
-		this.canvas = buildSourceCanvas(imageUrl);
+		this.canvas = this.buildSourceCanvas(imageUrl);
 	}
 
 	buildSourceCanvas(imageUrl){
