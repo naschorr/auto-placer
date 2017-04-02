@@ -60,8 +60,8 @@ class PlaceAutomator {
 	}
 
 	drawTile(placeColorIndex, x, y){
-		place.setColor(placeColorIndex);
-		place.drawTile(x, y);
+		this.place.setColor(placeColorIndex);
+		this.place.drawTile(x, y);
 	}
 
 	drawRandomTile(){
@@ -69,28 +69,25 @@ class PlaceAutomator {
 			return Math.floor(Math.random() * (max - min)) + min;
 		};
 
-		let x = randInclusive(0, this.canvas.canvas.clientWidth);
-		let y = randInclusive(0, this.canvas.canvas.clientHeight);
+		let x = this.x + randInclusive(0, this.canvas.canvas.clientWidth);
+		let y = this.y + randInclusive(0, this.canvas.canvas.clientHeight);
 		let pixel = this.getPixelAt(x, y);
 
 		// Make sure the pixel isn't transparent
-		if(pixel[3] < 255){
-			this.drawRandomTile();
-		}
-		else{
+		if(pixel[3] === 255){
 			this.drawTile(this.rgbToPlaceColorIndex(pixel[0], pixel[1], pixel[2]), x, y);
 		}
 	}
 
 	main(){
 		while(true){
-			if(place.enabled){
+			if(this.place.enabled){
 				this.drawRandomTile();
-				setTimeout(function(){}, this.longWait * 1000);
+				if(!(this.place.enabled)){
+					setTimeout(function(){}, this.longWait * 1000);
+				}
 			}
-			else{
-				setTimeout(function(){}, this.shortWait * 1000);
-			}
+			setTimeout(function(){}, this.shortWait * 1000);
 		}
 	}
 }
