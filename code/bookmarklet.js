@@ -5,10 +5,14 @@ javascript:
 	let topY = 580;
 	/* Change these three lines */
 
-	let self = this;
+	let context = window.App;
+	if(window.location.hostname.includes("reddit.com")){
+		context = this.r.place;
+	}
+
 	$.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js");
 	$.getScript("https://rawgit.com/naschorr/place-automator/master/code/place-automator.js");
 	/* Lazy, but it works */
 	setTimeout(function(){
-		new PlaceAutomator(self.r.place, imageUrl, leftX, topY);
+		new PlaceAutomator(context, imageUrl, leftX, topY);
 	}, 5 * 1000);

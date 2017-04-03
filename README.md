@@ -26,19 +26,22 @@ javascript:
 	let topY = 580;
 	/* Change these three lines */
 
-	let self = this;
+	let context = window.App;
+	if(window.location.hostname.includes("reddit.com")){
+		context = this.r.place;
+	}
+
 	$.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js");
 	$.getScript("https://rawgit.com/naschorr/place-automator/master/code/place-automator.js");
-	/* Lazy, but it works */
 	setTimeout(function(){
-		new PlaceAutomator(self.r.place, imageUrl, leftX, topY);
+		new PlaceAutomator(context, imageUrl, leftX, topY);
 	}, 5 * 1000);
 ```
 - Manually imputting commands into the dev console
 ```
 $.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js");
 $.getScript("https://rawgit.com/naschorr/place-automator/master/code/place-automator.js");
-new PlaceAutomator(this.r.place, "https://i.imgur.com/9h8nYWL.jpg", 50, 580);
+new PlaceAutomator(window.App, "https://i.imgur.com/9h8nYWL.jpg", 50, 580);
 ```
 
 These examples will start placing the tiles needed to create a 32x32 Javascript logo whose top-left corner is at coordinates (50, 580).
