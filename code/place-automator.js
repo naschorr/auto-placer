@@ -71,9 +71,8 @@ class PlaceAutomator {
 			return Math.floor(Math.random() * (max - min)) + min;
 		};
 
-		let height = this.canvas.canvas.clientHeight;
 		let x = randInclusive(0, this.canvas.canvas.clientWidth);
-		let y = randInclusive(0, height);
+		let y = randInclusive(0, this.canvas.canvas.clientHeight);
 		let pixel = this.canvas.getImageData(x, y, 1, 1).data;
 
 		// Make sure the pixel isn't transparent
