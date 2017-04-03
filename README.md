@@ -2,7 +2,7 @@
 The simple, cooperative, non-committal drawing tool for /r/place and pxls.space.
 
 ### What?
-First things first, check out ~~[/r/place](https://www.reddit.com/r/place/)~~ [pxls.space](http://pxls.space/)). It's a neat sort of territorial drawing experiment initially started by Reddit.
+First things first, check out [/r/place](https://www.reddit.com/r/place/) and [pxls.space](http://pxls.space/). They're these neat sort of territorial drawing experiments initially started by Reddit.
 
 Secondly, place-automator is a potential solution to the problem of how to coordinate people into placing tiles to create interesting designs. It does this through a mostly passive system that doesn't require you to install any extra software, and runs on the browser that you're already running. There aren't any servers or connections to manage, configuration is easy, and distribution can be done with a simple bookmarklet.
 
