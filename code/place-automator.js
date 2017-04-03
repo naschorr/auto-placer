@@ -5,6 +5,7 @@ class PlaceAutomator {
 		this.y = y;
 
 		this.colors = this.place.DEFAULT_COLOR_PALETTE;
+		this.waitTime = 300;	// 5 minutes
 
 		this.canvas = this.buildSourceCanvas(imageUrl);
 	}
@@ -33,9 +34,17 @@ class PlaceAutomator {
 		// Assumes that converter.js is already fetched/imported
 
 		let distToHex = function(hexString){
-			let rgb = new Hex(hexString.slice(1)).toRGB();
+			let hex = new Hex();
+			hex.hex = hexString.slice(1);
+			let rgb = hex.toRGB();
 
-			return Math.sqrt(Math.pow((rgb.r - r), 2) + Math.pow((rgb.g - g), 2) + Math.pow((rgb.b - b), 2));
+			let _r = Math.pow((rgb.r - r), 2);
+			let _g = Math.pow((rgb.g - g), 2);
+			let _b = Math.pow((rgb.b - b), 2);
+
+			let sqrt = Math.sqrt(_r + _g + _b);
+
+			return sqrt;
 		};
 
 		let closest = {
@@ -99,15 +108,18 @@ class PlaceAutomator {
 		let self = this;
 		let timer_seconds = this.getSecondsInTimer();
 		if(timer_seconds > 0){
-			console.log("Waiting", timer_seconds, "until tile placement...");
+			console.log("Waiting", timer_seconds, "seconds to place a tile...");
 			setTimeout(function(){
 				self.drawRandomTile();
 			}, (timer_seconds + 1) * 1000);
 		}
 		else{
-			setInterval(function(){
+			self.drawRandomTile();
+			var id = setInterval(function(){
+				let waitTime = self.waitTime;
 				self.drawRandomTile();
-			}, (this.getSecondsInTimer() + 1) * 1000);
+				console.log("Tile placed, waiting", waitTime, "seconds.");
+			}, (this.waitTime + 1) * 1000);
 		}
 	}
 }
