@@ -1,5 +1,5 @@
 # place-automator
-The cooperative, non-committal Place drawing tool.
+The simple, cooperative, non-committal drawing tool for /r/place.
 
 ### What?
 First things first, check out [/r/place](https://www.reddit.com/r/place/). It's a neat sort of territorial drawing experiment on Reddit.
