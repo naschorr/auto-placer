@@ -17,13 +17,13 @@ The This image is used as a template for where everyone will draw their tiles. I
 The coordinates define where the image will be created on the board. Specifically, they define the top-left corner of the image will be placed.
 
 With that said, there are two main ways of running it:
-- Executing a bookmarklet that you or someone else has made (ctrl-D > Edit > Paste the following in the URL box, then click on the bookmark to run it)
+- Executing a bookmarklet that you or someone else has made (ctrl-D > Edit > Paste the following in the URL box, then click on the resulting bookmark to run it)
 ```
 javascript:
 	/* Change these three lines */
-	let imageUrl = "https://i.imgur.com/rGbyKNL.jpg";
-	let leftX = 103;
-	let topY = 627;
+	let imageUrl = "https://i.imgur.com/9h8nYWL.jpg";
+	let leftX = 109;
+	let topY = 696;
 	/* Change these three lines */
 
 	let self = this;
@@ -38,8 +38,10 @@ javascript:
 ```
 $.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js");
 $.getScript("https://rawgit.com/naschorr/place-automator/master/code/place-automator.js");
-new PlaceAutomator(this.r.place, "https://i.imgur.com/rGbyKNL.jpg", 103, 627);
+new PlaceAutomator(this.r.place, "https://i.imgur.com/9h8nYWL.jpg", 109, 696);
 ```
+
+These examples will start placing the tiles needed to create a 32x32 Javascript logo whose top-left corner is at coordinates (109, 696).
 
 ### Anything Else?
 This was mostly hacked together in between working on other things, so it's pretty much in its most basic state. I'd like to add some test cases, and make the whole thing a bit more robust for the internet, but I'm not sure how long this thing (event?) will last. I'm also not very satisfied with the current bookmarklet, but it works okay enough.
