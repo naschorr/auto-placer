@@ -82,7 +82,7 @@ class PlaceAutomator {
 		}
 
 		let seconds = 0;
-		timer_elements = timer.split(":");
+		let timer_elements = timer.split(":");
 		timer_elements.forEach(function(element, index){
 			let position = timer_elements.length - index - 1;
 			if(position > 0){
@@ -96,15 +96,17 @@ class PlaceAutomator {
 	}
 
 	main(){
+		let self = this;
 		let timer_seconds = this.getSecondsInTimer();
 		if(timer_seconds > 0){
+			console.log("Waiting", timer_seconds, "until tile placement...");
 			setTimeout(function(){
-				this.drawRandomTile();
+				self.drawRandomTile();
 			}, (timer_seconds + 1) * 1000);
 		}
 		else{
 			setInterval(function(){
-				this.drawRandomTile();
+				self.drawRandomTile();
 			}, (this.getSecondsInTimer() + 1) * 1000);
 		}
 	}
