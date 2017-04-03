@@ -163,7 +163,10 @@ class PlaceAutomator {
 		if(this.isReddit){
 			console.log("/r/Place shut down, so I'm not going to bother with this logic");
 		}else if(this.isPxls){
-			this.place.initSocket();
+			let self = this;
+			setTimeout(function(){
+				self.place.initSocket();
+			}, 5 * 1000);
 		}else{
 			console.log(`Unspecified system. ${arguments.callee.toString()}, (${arguments}.toString())`);
 		}
@@ -176,14 +179,11 @@ class PlaceAutomator {
 			let timer_seconds = self.getSecondsInTimer();
 			console.log(`Waiting ${timer_seconds}s.`);
 			setTimeout(function(){
-				try{
+				let socket = this.place.socket;
+				if(socket.readyState === socket.CLOSING || socket.readyState === socket.CLOSED){
+					self.reconnect();
+				}else{
 					self.placeRandomTile();
-				}
-				catch (e){
-					console.log(e);
-					setTimeout(function(){
-						self.reconnect();
-					}, 5 * 1000);
 				}
 				self.main();
 			}, (timer_seconds + 1) * 1000);
