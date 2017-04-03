@@ -179,7 +179,7 @@ class PlaceAutomator {
 			let timer_seconds = self.getSecondsInTimer();
 			console.log(`Waiting ${timer_seconds}s.`);
 			setTimeout(function(){
-				let socket = this.place.socket;
+				let socket = self.place.socket;
 				if(socket.readyState === socket.CLOSING || socket.readyState === socket.CLOSED){
 					self.reconnect();
 				}else{
