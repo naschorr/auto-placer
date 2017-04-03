@@ -4,14 +4,9 @@ class PlaceAutomator {
 		this.x = x;
 		this.y = y;
 
-		this.name = "automate-place";
 		this.colors = this.place.DEFAULT_COLOR_PALETTE;
-		this.shortWait = 5;		// 5 seconds
-		this.longWait = 300;	// 5 minutes
 
 		this.canvas = this.buildSourceCanvas(imageUrl);
-
-		this.main();
 	}
 
 	buildSourceCanvas(imageUrl){
@@ -26,7 +21,7 @@ class PlaceAutomator {
 			canvas.width = img.width;
 			canvas.height = img.height;
 			ctx.drawImage(img, 0, 0);
-			self.drawRandomTile();
+			self.main();
 		};
 		img.crossOrigin = "Anonymous";
 		img.src = imageUrl;
@@ -79,15 +74,38 @@ class PlaceAutomator {
 		}
 	}
 
-	main(){
-		while(true){
-			if(this.place.enabled){
-				this.drawRandomTile();
-				if(!(this.place.enabled)){
-					setTimeout(function(){}, this.longWait * 1000);
-				}
+	getSecondsInTimer(){
+		let timer = document.getElementById("place-timer").textContent;
+
+		if(timer === ""){
+			return 0;
+		}
+
+		let seconds = 0;
+		timer_elements = timer.split(":");
+		timer_elements.forEach(function(element, index){
+			let position = timer_elements.length - index - 1;
+			if(position > 0){
+				seconds += position * 60 * parseInt(element, 10);
+			}else{
+				seconds += parseInt(element, 10);
 			}
-			setTimeout(function(){}, this.shortWait * 1000);
+		});
+
+		return seconds;
+	}
+
+	main(){
+		let timer_seconds = this.getSecondsInTimer();
+		if(timer_seconds > 0){
+			setTimeout(function(){
+				this.drawRandomTile();
+			}, (timer_seconds + 1) * 1000);
+		}
+		else{
+			setInterval(function(){
+				this.drawRandomTile();
+			}, (this.getSecondsInTimer() + 1) * 1000);
 		}
 	}
 }
