@@ -1,8 +1,8 @@
 # place-automator
-The simple, cooperative, non-committal drawing tool for /r/place.
+The simple, cooperative, non-committal drawing tool for /r/place and pxls.space.
 
 ### What?
-First things first, check out [/r/place](https://www.reddit.com/r/place/). It's a neat sort of territorial drawing experiment on Reddit.
+First things first, check out ~~[/r/place](https://www.reddit.com/r/place/)~~ [pxls.space](http://pxls.space/)). It's a neat sort of territorial drawing experiment initially started by Reddit.
 
 Secondly, place-automator is a potential solution to the problem of how to coordinate people into placing tiles to create interesting designs. It does this through a mostly passive system that doesn't require you to install any extra software, and runs on the browser that you're already running. There aren't any servers or connections to manage, configuration is easy, and distribution can be done with a simple bookmarklet.
 
@@ -22,8 +22,8 @@ With that said, there are two main ways of running it:
 javascript:
 	/* Change these three lines */
 	let imageUrl = "https://i.imgur.com/9h8nYWL.jpg";
-	let leftX = 109;
-	let topY = 696;
+	let leftX = 50;
+	let topY = 580;
 	/* Change these three lines */
 
 	let self = this;
@@ -38,10 +38,10 @@ javascript:
 ```
 $.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js");
 $.getScript("https://rawgit.com/naschorr/place-automator/master/code/place-automator.js");
-new PlaceAutomator(this.r.place, "https://i.imgur.com/9h8nYWL.jpg", 109, 696);
+new PlaceAutomator(this.r.place, "https://i.imgur.com/9h8nYWL.jpg", 50, 580);
 ```
 
-These examples will start placing the tiles needed to create a 32x32 Javascript logo whose top-left corner is at coordinates (109, 696).
+These examples will start placing the tiles needed to create a 32x32 Javascript logo whose top-left corner is at coordinates (50, 580).
 
 ### Anything Else?
 This was mostly hacked together in between working on other things, so it's pretty much in its most basic state. I'd like to add some test cases, and make the whole thing a bit more robust for the internet, but I'm not sure how long this thing (event?) will last. I'm also not very satisfied with the current bookmarklet, but it works okay enough.

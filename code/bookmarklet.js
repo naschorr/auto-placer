@@ -1,8 +1,8 @@
 javascript:
 	/* Change these three lines */
 	let imageUrl = "https://i.imgur.com/9h8nYWL.jpg";
-	let leftX = 109;
-	let topY = 696;
+	let leftX = 50;
+	let topY = 580;
 	/* Change these three lines */
 
 	let self = this;

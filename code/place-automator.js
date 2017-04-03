@@ -7,14 +7,8 @@ class PlaceAutomator {
 		this.REDDIT = "reddit.com";
 		this.PIXLS = "pxls.space";
 		this.system = window.location.hostname;
-		this.isReddit = false;
-		this.isPxls = false;
-
-		if(this.system.includes(this.REDDIT)){
-			this.isReddit = true;
-		}else if(this.system.includes(this.PIXLS)){
-			this.isPxls = true;
-		}
+		this.isReddit = this.system.includes(this.REDDIT);
+		this.isPxls = this.system.includes(this.PIXLS);
 
 		this.colors = this.getPaletteColors();
 
@@ -23,7 +17,7 @@ class PlaceAutomator {
 
 	/* Gets the array of palette colors available */
 	getPaletteColors(){
-		if(this.system.includes(this.REDDIT)){
+		if(this.isReddit){
 			return this.place.DEFAULT_COLOR_PALETTE;
 		}else{
 			/* No explicit javascript method to get pxls.space's color palette? */
@@ -170,6 +164,7 @@ class PlaceAutomator {
 		let self = this;
 		setTimeout(function(){
 			let timer_seconds = self.getSecondsInTimer();
+			console.log(`Waiting ${timer_seconds}s.`);
 			setTimeout(function(){
 				self.placeRandomTile();
 				self.main();
