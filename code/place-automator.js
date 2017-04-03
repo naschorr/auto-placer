@@ -5,8 +5,6 @@ class PlaceAutomator {
 		this.y = y;
 
 		this.colors = this.place.DEFAULT_COLOR_PALETTE;
-		this.waitTime = 300;	// 5 minutes
-
 		this.canvas = this.buildSourceCanvas(imageUrl);
 	}
 
@@ -73,13 +71,14 @@ class PlaceAutomator {
 			return Math.floor(Math.random() * (max - min)) + min;
 		};
 
+		let height = this.canvas.canvas.clientHeight;
 		let x = randInclusive(0, this.canvas.canvas.clientWidth);
-		let y = randInclusive(0, this.canvas.canvas.clientHeight);
+		let y = randInclusive(0, height);
 		let pixel = this.canvas.getImageData(x, y, 1, 1).data;
 
 		// Make sure the pixel isn't transparent
 		if(pixel[3] === 255){
-			this.drawTile(this.rgbToPlaceColorIndex(pixel[0], pixel[1], pixel[2]), this.x + x, this.y - y);
+			this.drawTile(this.rgbToPlaceColorIndex(pixel[0], pixel[1], pixel[2]), this.x + x, this.y + y);
 		}
 	}
 
@@ -106,20 +105,12 @@ class PlaceAutomator {
 
 	main(){
 		let self = this;
-		let timer_seconds = this.getSecondsInTimer();
-		if(timer_seconds > 0){
-			console.log("Waiting", timer_seconds, "seconds to place a tile...");
+		setTimeout(function(){
+			let timer_seconds = self.getSecondsInTimer();
 			setTimeout(function(){
 				self.drawRandomTile();
+				self.main();
 			}, (timer_seconds + 1) * 1000);
-		}
-		else{
-			self.drawRandomTile();
-			var id = setInterval(function(){
-				let waitTime = self.waitTime;
-				self.drawRandomTile();
-				console.log("Tile placed, waiting", waitTime, "seconds.");
-			}, (this.waitTime + 1) * 1000);
-		}
+		}, 1000);
 	}
 }
