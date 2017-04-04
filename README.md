@@ -7,7 +7,7 @@ First things first, check out [/r/place](https://www.reddit.com/r/place/) and [p
 Secondly, place-automator is a potential solution to the problem of how to coordinate people into placing tiles to create interesting designs. It does this through a mostly passive system that doesn't require you to install any extra software, and runs on the browser that you're already running. There aren't any servers or connections to manage, configuration is easy, and distribution can be done with a simple bookmarklet.
 
 ### Running It
-placer-automator needs three things for it to start working:
+place-automator needs three things for it to start working:
 - A link to a raw source image (string)
 - An x coordinate (integer)
 - A y coordinate (integer)
