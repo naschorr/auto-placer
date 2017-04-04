@@ -162,6 +162,7 @@ class PlaceAutomator {
 		return seconds;
 	}
 
+	/* Attempts to reconnect to the host if a socket closes */
 	reconnect(){
 		if(this.isReddit){
 			console.log("/r/Place shut down, so I'm not going to bother with this logic");
