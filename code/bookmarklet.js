@@ -1,6 +1,6 @@
 javascript:
 	/* Change these three lines */
-	let imageUrl = "https://i.imgur.com/9h8nYWL.jpg";
+	let imageUrl = "https://i.imgur.com/AxKGmnJ.jpg";
 	let leftX = 50;
 	let topY = 580;
 	/* Change these three lines */
