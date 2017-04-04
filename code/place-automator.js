@@ -123,7 +123,10 @@ class PlaceAutomator {
 		if(pixel[3] === 255){
 			this.chooseColor(this.getColorIndexFromRGB(pixel[0], pixel[1], pixel[2]));
 			this.placeTile(this.x + x, this.y + y);
+			return [this.x + x, this.y + y];
 		}
+
+		return false;
 	}
 
 	/* Gets the text content of a timer, and returns it */
@@ -177,13 +180,16 @@ class PlaceAutomator {
 		let self = this;
 		setTimeout(function(){
 			let timer_seconds = self.getSecondsInTimer();
-			console.log(`Waiting ${timer_seconds}s.`);
+			console.log(`Waiting ${timer_seconds} s`);
 			setTimeout(function(){
 				let socket = self.place.socket;
 				if(socket.readyState === socket.CLOSING || socket.readyState === socket.CLOSED){
 					self.reconnect();
-				}else{
-					self.placeRandomTile();
+				}else if(socket.readyState === socket.OPEN){
+					let result = self.placeRandomTile();
+					if(result){
+						console.log(`Placed tile at (${result[0]}, ${result[1]})`);
+					}
 				}
 				self.main();
 			}, (timer_seconds + 1) * 1000);
