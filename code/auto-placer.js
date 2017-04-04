@@ -40,6 +40,7 @@ class AutoPlacer {
 			canvas.width = img.width;
 			canvas.height = img.height;
 			ctx.drawImage(img, 0, 0);
+			/* Go into the main loop once the image is drawn onto the canvas */
 			self.main();
 		};
 		/* Kind of sketchy, but should be fine with known good image hosts */
@@ -56,7 +57,7 @@ class AutoPlacer {
 		}else if(this.isPxls){
 			return this.place.elements.board[0].getContext("2d");
 		}else{
-			console.log(`Unspecified system. ${arguments.callee.toString()}, (${arguments}.toString())`);
+			console.log(`Unspecified system in getPlaceCanvasCtx()`);
 		}
 	}
 
@@ -84,10 +85,10 @@ class AutoPlacer {
 	getPixelFromCanvasCtx(canvasCtx, x, y){
 		let canvasWidth = canvasCtx.canvas.clientWidth;
 		let canvasHeight = canvasCtx.canvas.clientHeight
-		if(x < 0 || x > canvasWidth){
+		if(0 > x || x >= canvasWidth){
 			throw new Error(`X coordinate (${x}) is out of bounds on canvas with width (${canvasWidth})`);
 		}
-		if(y < 0 || y > canvasHeight){
+		if(0 > y || y >= canvasHeight){
 			throw new Error(`Y coordinate (${y}) is out of bounds on canvas with height (${canvasHeight})`);
 		}
 
@@ -135,7 +136,7 @@ class AutoPlacer {
 		}else if(this.isPxls){
 			this.place.switchColor(colorIndex);
 		}else{
-			console.log(`Unspecified system. ${arguments.callee.toString()}, (${arguments}.toString())`);
+			console.log(`Unspecified system in chooseColor()`);
 		}
 	}
 
@@ -147,7 +148,7 @@ class AutoPlacer {
 		}else if(this.isPxls){
 			this.place.place(x, y);
 		}else{
-			console.log(`Unspecified system. ${arguments.callee.toString()}, (${arguments}.toString())`);
+			console.log(`Unspecified system in placeTile()`);
 		}
 	}
 
@@ -169,17 +170,17 @@ class AutoPlacer {
 			var placeX = x + this.x;
 			var placeY = y + this.y;
 			attemptCounter += 1;
-		}while(this.comparePixels(pixel, this.getPixelFromCanvasCtx(this.getPlaceCanvasCtx(), placeX, placeY)) &&
-			   pixel[3] === 255 && 
+		}while(!(this.comparePixels(pixel, this.getPixelFromCanvasCtx(this.getPlaceCanvasCtx(), placeX, placeY))) &&
+			   pixel[3] !== 255 && 
 			   attemptCounter <= attemptLimit);
 
 		if(attemptCounter < attemptLimit){
 			this.chooseColor(this.getColorIndexFromRGB(pixel[0], pixel[1], pixel[2]));
 			this.placeTile(placeX, placeY);
 			return [placeX, placeY];
-		}else{
-			return false;
 		}
+
+		return false;
 	}
 
 	/* Gets the text content of a timer, and returns it */
@@ -189,7 +190,7 @@ class AutoPlacer {
 		}else if(this.isPxls){
 			return document.body.getElementsByClassName("cooldown-timer")[0].textContent;
 		}else{
-			console.log(`Unspecified system. ${arguments.callee.toString()}, (${arguments}.toString())`);
+			console.log(`Unspecified system in getTimerText()`);
 		}
 	}
 
@@ -225,7 +226,7 @@ class AutoPlacer {
 				self.place.initSocket();
 			}, 5 * 1000);
 		}else{
-			console.log(`Unspecified system. ${arguments.callee.toString()}, (${arguments}.toString())`);
+			console.log(`Unspecified system in reconnect()`);
 		}
 	}
 
@@ -233,6 +234,7 @@ class AutoPlacer {
 	getConnectionState(){
 		if(this.isReddit){
 			console.log("/r/Place shut down, so I'm not going to bother with this logic");
+			return 1;
 		}else if(this.isPxls){
 			let socket = this.place.socket;
 			if(socket.readyState === socket.CLOSING || socket.readyState === socket.CLOSED){
@@ -243,7 +245,7 @@ class AutoPlacer {
 				return 2;
 			}
 		}else{
-			console.log(`Unspecified system. ${arguments.callee.toString()}, (${arguments}.toString())`);
+			console.log(`Unspecified system in getConnectionState()`);
 		}
 	}
 
@@ -254,15 +256,14 @@ class AutoPlacer {
 			let timer_seconds = self.getSecondsInTimer();
 			console.log(`Waiting ${timer_seconds} s`);
 			setTimeout(function(){
-				let state = self.getConnectionState();
-				switch(state){
+				switch(self.getConnectionState()){
 					case 0:
 						self.reconnect();
 						break;
 					case 1:
 						let result = self.placeRandomTile();
 						if(result){
-							console.log(`Placed tile at (${result[0]}, ${result[1]})`);
+							console.log(`Placing tile at (${result[0]}, ${result[1]})`);
 						}
 						break;
 					case 2:
