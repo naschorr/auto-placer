@@ -248,6 +248,24 @@ class AutoPlacer {
 		}
 	}
 
+	/* Returns an int on whether or not the script will be able to place a tile (0 = no, 1 = yes, 2 = wait) */
+	getConnectionState(){
+		if(this.isReddit){
+			console.log("/r/Place shut down, so I'm not going to bother with this logic");
+		}else if(this.isPxls){
+			let socket = this.place.socket;
+			if(socket.readyState === socket.CLOSING || socket.readyState === socket.CLOSED){
+				return 0;
+			}else if(socket.readyState === socket.OPEN){
+				return 1;
+			}else{
+				return 2;
+			}
+		}else{
+			console.log(`Unspecified system. ${arguments.callee.toString()}, (${arguments}.toString())`);
+		}
+	}
+
 	/* Main execution loop */
 	main(){
 		let self = this;
