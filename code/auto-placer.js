@@ -177,7 +177,7 @@ class AutoPlacer {
 		}
 	}
 
-	/* Returns an int on whether or not the script will be able to place a tile (0 = no, 1 = yes, 2 = wait)*/
+	/* Returns an int on whether or not the script will be able to place a tile (0 = no, 1 = yes, 2 = wait) */
 	getConnectionState(){
 		if(this.isReddit){
 			console.log("/r/Place shut down, so I'm not going to bother with this logic");
