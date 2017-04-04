@@ -12,7 +12,7 @@ class PlaceAutomator {
 
 		this.colors = this.getPaletteColors();
 
-		this.canvas = this.buildSourceCanvas(imageUrl);
+		this.canvasCtx = this.buildSourceCanvas(imageUrl);
 	}
 
 	/* Gets the array of palette colors available */
@@ -20,6 +20,7 @@ class PlaceAutomator {
 		if(this.isReddit){
 			return this.place.DEFAULT_COLOR_PALETTE;
 		}else{
+<<<<<<< Updated upstream:code/place-automator.js
 			/* No explicit javascript method to get pxls.space's color palette? */
 			/* eslint-disable indent */
 			return ["#FFFFFF", "#E4E4E4", "#888888", "#222222", "#FFA7D1",
@@ -27,6 +28,9 @@ class PlaceAutomator {
 					"#02BE01", "#00D3DD", "#0083C7", "#0000EA", "#CF6EE4",
 					"#820080"];
 			/* eslint-enable indent */
+=======
+			return this.place.palette;
+>>>>>>> Stashed changes:code/auto-placer.js
 		}
 	}
 
@@ -50,6 +54,51 @@ class PlaceAutomator {
 		img.src = imageUrl;
 
 		return ctx;
+	}
+
+	/* Gets the canvas context of the place board */
+	getPlaceCanvasCtx(){
+		if(this.isReddit){
+			console.log("/r/Place shut down, so I'm not going to bother with this logic");
+		}else if(this.isPxls){
+			return this.place.elements.board[0].getContext("2d");
+		}else{
+			console.log(`Unspecified system. ${arguments.callee.toString()}, (${arguments}.toString())`);
+		}
+	}
+
+	/* Compares two pixels, returns true if equal, false if not */
+	comparePixels(pixelA, pixelB){
+		/* http://stackoverflow.com/a/14853974 */
+		if(!pixelA || !pixelB){
+			return false;
+		}
+
+		if(pixelA.length !== pixelB.length){
+			return false;
+		}
+
+		for(let index = 0; index < pixelA.length; index++){
+			if(pixelA[index] !== pixelB[index]){
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/* Gets a single pixel's RGBA array from the given canvas context */
+	getPixelFromCanvasCtx(canvasCtx, x, y){
+		let canvasWidth = ctx.canvas.clientWidth;
+		let canvasHeight = ctx.canvas.clientHeight
+		if(x < 0 || x > canvasWidth){
+			throw new Error(`X coordinate (${x}) is out of bounds on canvas with width (${canvasWidth})`);
+		}
+		if(y < 0 || y > canvasHeight){
+			throw new Error(`Y coordinate (${y}) is out of bounds on canvas with height (${canvasHeight})`);
+		}
+
+		return ctx.getImageData(x, y, 1, 1).data;
 	}
 
 	/* Converts r, g, and b values into a single color index (for this.colors) */
@@ -115,18 +164,29 @@ class PlaceAutomator {
 			return Math.floor(Math.random() * (max - min)) + min;
 		};
 
-		let x = randInclusive(0, this.canvas.canvas.clientWidth);
-		let y = randInclusive(0, this.canvas.canvas.clientHeight);
-		let pixel = this.canvas.getImageData(x, y, 1, 1).data;
+		let canvasWidth = this.canvasCtx.canvas.clientWidth;
+		let canvasHeight = this.canvasCtx.canvas.clientHeight;
+		let attemptCounter = 0;
+		let attemptLimit = canvasWidth * canvasHeight;
 
-		// Make sure the pixel isn't transparent
-		if(pixel[3] === 255){
+		do{
+			var x = randInclusive(0, canvasWidth);
+			var y = randInclusive(0, canvasHeight);
+			var pixel = this.getPixelFromCanvasCtx(this.canvasCtx, x, y);
+			var placeX = x + this.x;
+			var placeY = y + this.y;
+			attemptCounter += 1;
+		}while(this.comparePixels(pixel, this.getPixelFromCanvasCtx(this.getPlaceCanvasCtx(placeX, placeY))) &&
+			   pixel[3] === 255 && 
+			   attemptCounter <= attemptLimit);
+
+		if(attemptCounter < attemptLimit){
 			this.chooseColor(this.getColorIndexFromRGB(pixel[0], pixel[1], pixel[2]));
-			this.placeTile(this.x + x, this.y + y);
-			return [this.x + x, this.y + y];
+			this.placeTile(placeX, placeY);
+			return [placeX, placeY];
+		}else{
+			return false;
 		}
-
-		return false;
 	}
 
 	/* Gets the text content of a timer, and returns it */
