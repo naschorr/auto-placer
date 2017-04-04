@@ -170,7 +170,7 @@ class AutoPlacer {
 			var placeX = x + this.x;
 			var placeY = y + this.y;
 			attemptCounter += 1;
-			let canvasPixel = this.getPixelFromCanvasCtx(this.getPlaceCanvasCtx(), placeX, placeY);
+			var canvasPixel = this.getPixelFromCanvasCtx(this.getPlaceCanvasCtx(), placeX, placeY);
 			console.log(attemptCounter, placeX, placeY, pixel, canvasPixel, this.comparePixels(pixel, canvasPixel));
 		}while(this.comparePixels(pixel, canvasPixel) ||
 			   pixel[3] !== 255 ||
