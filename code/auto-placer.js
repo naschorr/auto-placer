@@ -1,3 +1,6 @@
+/* eslint no-case-declarations: "ignore" */
+/* eslint no-indent: "ignore" */
+
 class AutoPlacer {
 	constructor(place, imageUrl, x, y){
 		this.place = place;
@@ -21,12 +24,10 @@ class AutoPlacer {
 			return this.place.DEFAULT_COLOR_PALETTE;
 		}else{
 			/* No explicit javascript method to get pxls.space's color palette? */
-			/* eslint-disable indent */
 			return ["#FFFFFF", "#E4E4E4", "#888888", "#222222", "#FFA7D1",
 					"#E50000", "#E59500", "#A06A42", "#E5D900", "#94E044",
 					"#02BE01", "#00D3DD", "#0083C7", "#0000EA", "#CF6EE4",
 					"#820080"];
-			/* eslint-enable indent */
 		}
 	}
 
@@ -176,6 +177,24 @@ class AutoPlacer {
 		}
 	}
 
+	/* Returns an int on whether or not the script will be able to place a tile (0 = no, 1 = yes, 2 = wait)*/
+	getConnectionState(){
+		if(this.isReddit){
+			console.log("/r/Place shut down, so I'm not going to bother with this logic");
+		}else if(this.isPxls){
+			let socket = this.place.socket;
+			if(socket.readyState === socket.CLOSING || socket.readyState === socket.CLOSED){
+				return 0;
+			}else if(socket.readyState === socket.OPEN){
+				return 1;
+			}else{
+				return 2;
+			}
+		}else{
+			console.log(`Unspecified system. ${arguments.callee.toString()}, (${arguments}.toString())`);
+		}
+	}
+
 	/* Main execution loop */
 	main(){
 		let self = this;
@@ -183,14 +202,21 @@ class AutoPlacer {
 			let timer_seconds = self.getSecondsInTimer();
 			console.log(`Waiting ${timer_seconds} s`);
 			setTimeout(function(){
-				let socket = self.place.socket;
-				if(socket.readyState === socket.CLOSING || socket.readyState === socket.CLOSED){
-					self.reconnect();
-				}else if(socket.readyState === socket.OPEN){
-					let result = self.placeRandomTile();
-					if(result){
-						console.log(`Placed tile at (${result[0]}, ${result[1]})`);
-					}
+				let state = self.getConnectionState();
+				switch(state){
+					case 0:
+						self.reconnect();
+						break;
+					case 1:
+						let result = self.placeRandomTile();
+						if(result){
+							console.log(`Placed tile at (${result[0]}, ${result[1]})`);
+						}
+						break;
+					case 2:
+						break;
+					default:
+						break;
 				}
 				self.main();
 			}, (timer_seconds + 1) * 1000);
