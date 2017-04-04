@@ -170,13 +170,14 @@ class AutoPlacer {
 			var placeX = x + this.x;
 			var placeY = y + this.y;
 			attemptCounter += 1;
-		}while(!(this.comparePixels(pixel, this.getPixelFromCanvasCtx(this.getPlaceCanvasCtx(), placeX, placeY))) &&
-			   pixel[3] !== 255 && 
+		}while(this.comparePixels(pixel, this.getPixelFromCanvasCtx(this.getPlaceCanvasCtx(), placeX, placeY)) ||
+			   pixel[3] !== 255 ||
 			   attemptCounter <= attemptLimit);
+		console.log(attemptCounter);
 
 		if(attemptCounter < attemptLimit){
-			this.chooseColor(this.getColorIndexFromRGB(pixel[0], pixel[1], pixel[2]));
-			this.placeTile(placeX, placeY);
+			//this.chooseColor(this.getColorIndexFromRGB(pixel[0], pixel[1], pixel[2]));
+			//this.placeTile(placeX, placeY);
 			return [placeX, placeY];
 		}
 
