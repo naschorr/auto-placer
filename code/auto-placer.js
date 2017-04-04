@@ -82,8 +82,8 @@ class AutoPlacer {
 
 	/* Gets a single pixel's RGBA array from the given canvas context */
 	getPixelFromCanvasCtx(canvasCtx, x, y){
-		let canvasWidth = ctx.canvas.clientWidth;
-		let canvasHeight = ctx.canvas.clientHeight
+		let canvasWidth = canvasCtx.canvas.clientWidth;
+		let canvasHeight = canvasCtx.canvas.clientHeight
 		if(x < 0 || x > canvasWidth){
 			throw new Error(`X coordinate (${x}) is out of bounds on canvas with width (${canvasWidth})`);
 		}
@@ -91,7 +91,7 @@ class AutoPlacer {
 			throw new Error(`Y coordinate (${y}) is out of bounds on canvas with height (${canvasHeight})`);
 		}
 
-		return ctx.getImageData(x, y, 1, 1).data;
+		return canvasCtx.getImageData(x, y, 1, 1).data;
 	}
 
 	/* Converts r, g, and b values into a single color index (for this.colors) */
