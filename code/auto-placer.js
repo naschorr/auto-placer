@@ -1,4 +1,4 @@
-class PlaceAutomator {
+class AutoPlacer {
 	constructor(place, imageUrl, x, y){
 		this.place = place;
 		this.x = x;

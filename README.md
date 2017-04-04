@@ -1,13 +1,13 @@
-# place-automator
+# auto-placer
 The simple, cooperative, non-committal drawing tool for /r/place and pxls.space.
 
 ### What?
 First things first, check out [/r/place](https://www.reddit.com/r/place/) and [pxls.space](http://pxls.space/). They're these neat sort of territorial drawing experiments initially started by Reddit.
 
-Secondly, place-automator is a potential solution to the problem of how to coordinate people into placing tiles to create interesting designs. It does this through a mostly passive system that doesn't require you to install any extra software, and runs on the browser that you're already running. There aren't any servers or connections to manage, configuration is easy, and distribution can be done with a simple bookmarklet.
+Secondly, auto-placer is a potential solution to the problem of how to coordinate people into placing tiles to create interesting designs. It does this through a mostly passive system that doesn't require you to install any extra software, and runs on the browser that you're already running. There aren't any servers or connections to manage, configuration is easy, and distribution can be done with a simple bookmarklet.
 
 ### Running It
-place-automator needs three things for it to start working:
+auto-placer needs three things for it to start working:
 - A link to a raw source image (string)
 - An x coordinate (integer)
 - A y coordinate (integer)
@@ -32,16 +32,16 @@ javascript:
 	}
 
 	$.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js");
-	$.getScript("https://rawgit.com/naschorr/place-automator/master/code/place-automator.js");
+	$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js");
 	setTimeout(function(){
-		new PlaceAutomator(context, imageUrl, leftX, topY);
+		new AutoPlacer(context, imageUrl, leftX, topY);
 	}, 5 * 1000);
 ```
 - Manually inputting commands into the dev console
 ```
 $.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js");
-$.getScript("https://rawgit.com/naschorr/place-automator/master/code/place-automator.js");
-new PlaceAutomator(window.App, "https://i.imgur.com/AxKGmnJ.jpg", 50, 580);
+$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js");
+new AutoPlacer(window.App, "https://i.imgur.com/AxKGmnJ.jpg", 50, 580);
 ```
 
 In Chrome, bookmarklets can be made by pressing ctrl-D, clicking on 'Edit...' and then pasting the code inside the URL box.

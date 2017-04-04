@@ -11,8 +11,8 @@ javascript:
 	}
 
 	$.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js");
-	$.getScript("https://rawgit.com/naschorr/place-automator/master/code/place-automator.js");
+	$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js");
 	/* Lazy, but it works */
 	setTimeout(function(){
-		new PlaceAutomator(context, imageUrl, leftX, topY);
+		new AutoPlacer(context, imageUrl, leftX, topY);
 	}, 5 * 1000);
