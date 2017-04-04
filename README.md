@@ -18,7 +18,7 @@ The coordinates define where the image will be created on the board. Specificall
 
 ### Execution
 After configuration, there are two main ways of running it:
-- Via a bookmarklet that you or someone else has made (like so)
+- Via a bookmarklet that you or someone else has made using this code:
 ```
 javascript:
 	/* Change these three lines */
@@ -32,31 +32,20 @@ javascript:
 		context = this.r.place;
 	}
 
-	$.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js");
-	$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js");
-	setTimeout(function(){
-		new AutoPlacer(context, imageUrl, leftX, topY);
-	}, 5 * 1000);
+	$.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js", function(){
+		$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js", function() {
+			new AutoPlacer(context, imageUrl, leftX, topY);
+		});
+	});
 ```
 
-- Manually copy-pasting the script into the console
+- Manually copy-pasting the already configured script into the console:
 ```
-/* Change these three lines */
-let imageUrl = "https://i.imgur.com/AxKGmnJ.jpg";
-let leftX = 50;
-let topY = 580;
-/* Change these three lines */
-
-let context = window.App;
-if(window.location.hostname.includes("reddit.com")){
-	context = this.r.place;
-}
-
-$.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js");
-$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js");
-setTimeout(function(){
-	new AutoPlacer(context, imageUrl, leftX, topY);
-}, 5 * 1000);
+$.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js", function(){
+	$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js", function() {
+		new AutoPlacer(window.App, "https://i.imgur.com/AxKGmnJ.jpg", 50, 580);
+	});
+});
 ```
 
 In Chrome, bookmarklets can be made by pressing ctrl-D, clicking on 'Edit...' and then pasting the code inside the URL box.
