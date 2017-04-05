@@ -151,7 +151,7 @@ class AutoPlacer {
 		if(this.isReddit){
 			this.place.drawTile(x, y);
 		}else if(this.isPxls){
-			this.place.place(x, y);
+			this.place.attemptPlace(x, y);
 		}else{
 			console.log(`Unspecified system in placeTile()`);
 		}
