@@ -10,7 +10,7 @@ javascript:
 		context = this.r.place;
 	}
 
-	$.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js", function(){
+	$.getScript("https://rawgit.com/naschorr/color-converter/master/code/converter.js", function(){
 		$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js", function() {
 			new AutoPlacer(context, imageUrl, leftX, topY);
 		});

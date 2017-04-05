@@ -35,8 +35,8 @@ javascript:
 		context = this.r.place;
 	}
 
-	$.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js", function(){
-		$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js", function() {
+	$.getScript("https://rawgit.com/naschorr/color-converter/master/code/converter.js", function(){
+		$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js", function(){
 			new AutoPlacer(context, imageUrl, leftX, topY);
 		});
 	});
@@ -45,8 +45,8 @@ javascript:
 Below is an example of a preconfigured script for the developer console.
 ```
 let context = window.App;
-$.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js", function(){
-	$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js", function() {
+$.getScript("https://rawgit.com/naschorr/color-converter/master/code/converter.js", function(){
+	$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js", function(){
 		new AutoPlacer(context, "https://i.imgur.com/AxKGmnJ.jpg", 50, 580);
 	});
 });
