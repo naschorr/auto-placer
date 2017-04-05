@@ -3,18 +3,23 @@
 
 class AutoPlacer {
 	constructor(place, imageUrl, x, y){
+		/* Arg handling */
 		this.place = place;
 		this.x = x;
 		this.y = y;
 
+		/* Literals */
+		this.RECAPTCHA_TITLE = "recaptcha challenge";
 		this.REDDIT = "reddit.com";
 		this.PIXLS = "pxls.space";
+
+		/* Init the needed members */
 		this.system = window.location.hostname;
 		this.isReddit = this.system.includes(this.REDDIT);
 		this.isPxls = this.system.includes(this.PIXLS);
-
 		this.colors = this.getPaletteColors();
 
+		/* Set up the canvas and start placing */
 		this.canvasCtx = this.buildSourceCanvas(imageUrl);
 	}
 
@@ -248,48 +253,50 @@ class AutoPlacer {
 		}
 	}
 
-	/* Returns an int on whether or not the script will be able to place a tile (0 = no, 1 = yes, 2 = wait) */
-	getConnectionState(){
-		if(this.isReddit){
-			console.log("/r/Place shut down, so I'm not going to bother with this logic");
-		}else if(this.isPxls){
-			let socket = this.place.socket;
-			if(socket.readyState === socket.CLOSING || socket.readyState === socket.CLOSED){
-				return 0;
-			}else if(socket.readyState === socket.OPEN){
-				return 1;
-			}else{
-				return 2;
-			}
-		}else{
-			console.log(`Unspecified system. ${arguments.callee.toString()}, (${arguments}.toString())`);
-		}
+	/* Detects if a captcha is currently on screen or not, returns a bool */
+	isCaptchaOnScreen(){
+		/* Captcha hierarchy is:
+			<div>
+				<div></div>
+				<div>
+					<iframe></iframe>
+				</div>
+			</div
+
+			This gets the actual iframe captcha element, to get the topmost div, which has a
+			'visibility' style tag that toggles when the captcha is activated/decativated.
+		*/
+		let iframeJqObj = $(`iframe[title$='${this.RECAPTCHA_TITLE}']`);
+		let iframeGrandparentElement = iframeJqObj.parent().parent().get(0);
+		return !(iframeGrandparentElement.style.visibility === "hidden");
 	}
 
 	/* Main execution loop */
 	main(){
 		let self = this;
 		setTimeout(function(){
-			let timer_seconds = self.getSecondsInTimer();
-			console.log(`Waiting ${timer_seconds} s`);
-			setTimeout(function(){
-				switch(self.getConnectionState()){
-					case 0:
-						self.reconnect();
-						break;
-					case 1:
-						let result = self.placeRandomTile();
-						if(result){
-							console.log(`Placing tile at (${result[0]}, ${result[1]})`);
-						}
-						break;
-					case 2:
-						break;
-					default:
-						break;
-				}
-				self.main();
-			}, (timer_seconds + 1) * 1000);
+			if(!(self.isCaptchaOnScreen())){
+				let timer_seconds = self.getSecondsInTimer();
+				console.log(`Waiting ${timer_seconds} s`);
+				setTimeout(function(){
+					switch(self.getConnectionState()){
+						case 0:
+							self.reconnect();
+							break;
+						case 1:
+							let result = self.placeRandomTile();
+							if(result){
+								console.log(`Placing tile at (${result[0]}, ${result[1]})`);
+							}
+							break;
+						case 2:
+							break;
+						default:
+							break;
+					}
+					self.main();
+				}, (timer_seconds + 1) * 1000);
+			}
 		}, 1000);
 	}
 }
