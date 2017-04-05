@@ -14,6 +14,7 @@ class AutoPlacer {
 		this.PIXLS = "pxls.space";
 
 		/* Init the needed members */
+		this.WAIT_TIME = 3;
 		this.system = window.location.hostname;
 		this.isReddit = this.system.includes(this.REDDIT);
 		this.isPxls = this.system.includes(this.PIXLS);
@@ -253,8 +254,8 @@ class AutoPlacer {
 		}
 	}
 
-	/* Detects if a captcha is currently on screen or not, returns a bool */
-	isCaptchaOnScreen(){
+	/* Detects if a captcha is currently on screen or not, execute a callback if it's hidden */
+	checkCaptchaVisibility(onHidden){
 		/* Captcha hierarchy is:
 			<div>
 				<div></div>
@@ -268,35 +269,49 @@ class AutoPlacer {
 		*/
 		let iframeJqObj = $(`iframe[title$='${this.RECAPTCHA_TITLE}']`);
 		let iframeGrandparentElement = iframeJqObj.parent().parent().get(0);
-		return !(iframeGrandparentElement.style.visibility === "hidden");
+
+		try{
+			if(iframeGrandparentElement.style.visibility === "hidden"){
+				onHidden();
+			}
+		}
+		catch (e){
+			if (e instanceof TypeError){
+				console.error("TypeError when returning bool in checkCaptchaVisibility(), the element probably isn't in the DOM yet");
+				/* Todo: Check number of times this fails */
+				this.checkCaptchaVisibility(onHidden)
+			}else{
+				throw new Error("Unhandled error returning bool in checkCaptchaVisibility()");
+			}
+		}
 	}
 
 	/* Main execution loop */
 	main(){
 		let self = this;
 		setTimeout(function(){
-			if(!(self.isCaptchaOnScreen())){
-				let timer_seconds = self.getSecondsInTimer();
-				console.log(`Waiting ${timer_seconds} s`);
-				setTimeout(function(){
-					switch(self.getConnectionState()){
-						case 0:
-							self.reconnect();
-							break;
-						case 1:
+			let waitSeconds = self.getSecondsInTimer() + 1;	// Extra second to make sure timer has fully elapsed
+			console.log(`Waiting ${waitSeconds} s`);
+			setTimeout(function(){
+				switch(self.getConnectionState()){
+					case 0:
+						self.reconnect();
+						break;
+					case 1:
+						self.checkCaptchaVisibility(function(){
 							let result = self.placeRandomTile();
 							if(result){
 								console.log(`Placing tile at (${result[0]}, ${result[1]})`);
 							}
-							break;
-						case 2:
-							break;
-						default:
-							break;
-					}
-					self.main();
-				}, (timer_seconds + 1) * 1000);
-			}
-		}, 1000);
+						});
+						break;
+					case 2:
+						break;
+					default:
+						break;
+				}
+				self.main();
+			}, waitSeconds * 1000);
+		}, self.WAIT_TIME * 1000);
 	}
 }
