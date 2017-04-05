@@ -18,7 +18,10 @@ The coordinates define where the image will be created on the board. Specificall
 
 ### Execution
 After configuration, there are two main ways of running it:
-- Via a bookmarklet that you or someone else has made (like so)
+- Via a bookmarklet
+- Via manually pasting code into the developer console
+
+Below is an example of a simple bookmarklet
 ```
 javascript:
 	/* Change these three lines */
@@ -32,36 +35,28 @@ javascript:
 		context = this.r.place;
 	}
 
-	$.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js");
-	$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js");
-	setTimeout(function(){
-		new AutoPlacer(context, imageUrl, leftX, topY);
-	}, 5 * 1000);
+	$.getScript("https://rawgit.com/naschorr/color-converter/master/code/converter.js", function(){
+		$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js", function(){
+			new AutoPlacer(context, imageUrl, leftX, topY);
+		});
+	});
 ```
 
-- Manually copy-pasting the script into the console
+Below is an example of a preconfigured script for the developer console.
 ```
-/* Change these three lines */
-let imageUrl = "https://i.imgur.com/AxKGmnJ.jpg";
-let leftX = 50;
-let topY = 580;
-/* Change these three lines */
-
 let context = window.App;
-if(window.location.hostname.includes("reddit.com")){
-	context = this.r.place;
-}
-
-$.getScript("https://rawgit.com/naschorr/color-converter/master/converter.js");
-$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js");
-setTimeout(function(){
-	new AutoPlacer(context, imageUrl, leftX, topY);
-}, 5 * 1000);
+$.getScript("https://rawgit.com/naschorr/color-converter/master/code/converter.js", function(){
+	$.getScript("https://rawgit.com/naschorr/auto-placer/master/code/auto-placer.js", function(){
+		new AutoPlacer(context, "https://i.imgur.com/AxKGmnJ.jpg", 50, 580);
+	});
+});
 ```
 
-In Chrome, bookmarklets can be made by pressing ctrl-D, clicking on 'Edit...' and then pasting the code inside the URL box.
+Obviously, you can convert the bottom example into a bookmarklet with a `javascript:` line at the top, and likewise the upper example can be pasted into the developer console if the `javascript:` line at the top is omitted.
 
-The above examples will start placing the tiles needed to create a 24x24 Javascript logo whose top-left corner is at coordinates (50, 580).
+When executed, the above examples will start placing the tiles needed to create a 24x24 Javascript logo whose top-left corner is at coordinates (50, 580).
+
+Lastly, in Chrome, bookmarklets can be made by pressing ctrl-D, clicking on 'Edit...' and then pasting the code inside the URL box.
 
 ### Anything Else?
 This was mostly hacked together in between working on other things, so it's pretty much in its most basic state. I'd like to add some test cases, and make the whole thing a bit more robust for the internet, but I'm not sure how long this thing (event?) will last. I'm also not very satisfied with the current bookmarklet, but it works okay enough.
