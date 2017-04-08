@@ -15,6 +15,7 @@ class AutoPlacer {
 
 		/* Init the needed members */
 		this.WAIT_TIME = 3;
+		this.checkCaptchaRecovered = false;
 		this.system = window.location.hostname;
 		this.isReddit = this.system.includes(this.REDDIT);
 		this.isPxls = this.system.includes(this.PIXLS);
@@ -256,6 +257,12 @@ class AutoPlacer {
 
 	/* Detects if a captcha is currently on screen or not, execute a callback if it's hidden */
 	checkCaptchaVisibility(onHidden){
+		/* Reddit didn't have captchas, so just ignore the check and run the callback */
+		if(this.isReddit){
+			onHidden();
+			return;
+		}
+
 		/* Captcha hierarchy is:
 			<div>
 				<div></div>
@@ -273,15 +280,39 @@ class AutoPlacer {
 		try{
 			if(iframeGrandparentElement.style.visibility === "hidden"){
 				onHidden();
+			}else{
+				console.log("Captcha visible");
 			}
+
+			/* Reset the flag on successful captcha check */
+			this.checkCaptchaRecovered = false;
 		}
 		catch (e){
 			if (e instanceof TypeError){
-				console.error("TypeError when returning bool in checkCaptchaVisibility(), the element probably isn't in the DOM yet");
-				/* Todo: Check number of times this fails */
-				this.checkCaptchaVisibility(onHidden)
+				console.error("TypeError in checkCaptchaVisibility(), the element probably isn't in the DOM yet. Attempting to recover...");
+
+				/* This gives the captcha a chance to recover instead of just quitting or infinitely looping */
+				if(!(this.checkCaptchaRecovered)){
+					try{
+						grecaptcha.reset();
+					}
+					catch (e){
+						if(e instanceof ReferenceError){
+							console.error("ReferenceError when attempting grecaptcha.reset()");
+						}else{
+							console.error("Unhandled error when attempting grecaptcha.reset()");
+						}
+					}
+					finally{
+						this.checkCaptchaRecovered = true;
+					}
+
+				}else{
+					throw new Error("Too many TypeErrors in checkCaptchaVisibility()");
+				}
+
 			}else{
-				throw new Error("Unhandled error returning bool in checkCaptchaVisibility()");
+				throw new Error("Unhandled error in checkCaptchaVisibility()");
 			}
 		}
 	}
