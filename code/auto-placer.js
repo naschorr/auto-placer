@@ -209,14 +209,10 @@ class AutoPlacer {
 		}
 
 		let seconds = 0;
-		let timer_elements = timer.split(":");
+		let timer_elements = timer.split(":").slice(-2);
 		timer_elements.forEach(function(element, index){
-			let position = timer_elements.length - index - 1;
-			if(position > 0){
-				seconds += position * 60 * parseInt(element, 10);
-			}else{
-				seconds += parseInt(element, 10);
-			}
+			let position = timer_elements.length - index;
+			seconds += Math.pow(60, position - 1) * parseInt(element, 10);
 		});
 
 		return seconds;
