@@ -3,6 +3,11 @@
 
 class AutoPlacer {
 	constructor(place, imageUrl, x, y){
+		/* Check for required libraries */
+		if(!(this.isRequirementsLoaded())){
+			return;
+		}
+
 		/* Arg handling */
 		this.place = place;
 		this.x = x;
@@ -23,6 +28,28 @@ class AutoPlacer {
 
 		/* Set up the canvas and start placing */
 		this.canvasCtx = this.buildSourceCanvas(imageUrl);
+	}
+
+	/* Checks to make sure required libraries are loaded */
+	requirementsLoaded(){
+		let checkRequirement = function(moduleName){
+			try{
+				return !!(eval(moduleName));
+			}
+			catch(e){
+				if(e instanceof ReferenceError){
+					/* Explicitly return false on ReferenceError */
+					console.error(`${moduleName} isn't loaded.`)
+					return false;
+				}else{
+					/* But, if some other error popped, something else is probably very wrong */
+					console.error(`Unexpected error, checking ${moduleName}.`)
+					return false;
+				}
+			}
+		}
+
+		return (checkRequirement("jQuery") && checkRequirement("Color"));
 	}
 
 	/* Gets the array of palette colors available */
