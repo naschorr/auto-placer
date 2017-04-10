@@ -189,31 +189,30 @@ class AutoPlacer {
 		}
 	}
 
-	/* Places a random tile on the board */
-	placeRandomTile(){
-		let randInclusive = function(min, max){
-			return Math.floor(Math.random() * (max - min)) + min;
-		};
-
+	/* Places the next tile on the board (right -> left, top -> bottom) */
+	placeNextTile(){
 		let canvasWidth = this.canvasCtx.canvas.clientWidth;
 		let canvasHeight = this.canvasCtx.canvas.clientHeight;
-		let attemptCounter = 0;
-		let attemptLimit = canvasWidth * canvasHeight;
 
-		do{
-			var x = randInclusive(0, canvasWidth);
-			var y = randInclusive(0, canvasHeight);
-			var pixel = this.getPixelFromCanvasCtx(this.canvasCtx, x, y);
-			var placeX = x + this.x;
-			var placeY = y + this.y;
-			var canvasPixel = this.getPixelFromCanvasCtx(this.getPlaceCanvasCtx(), placeX, placeY);
-			attemptCounter += 1;
-		}while((this.comparePixels(pixel, canvasPixel) || pixel[3] !== 255) && attemptCounter < attemptLimit);
+		for(let y = 0; y < canvasHeight; y++){
+			for(let x = 0; x < canvasWidth; x++){
+				let pixel = this.getPixelFromCanvasCtx(this.canvasCtx, x, y);
+				if(pixel[3] < 255){
+					continue;
+				}
 
-		if(attemptCounter < attemptLimit){
-			this.chooseColor(this.getColorIndexFromRGB(pixel[0], pixel[1], pixel[2]));
-			this.placeTile(placeX, placeY);
-			return [placeX, placeY];
+				let boardX = x + this.x;
+				let boardY = y + this.y;
+				let boardPixel = this.getPixelFromCanvasCtx(this.getPlaceCanvasCtx(), boardX, boardY);
+				let pixelColorIndex = this.getColorIndexFromRGB(pixel[0], pixel[1], pixel[2]);
+				let boardPixelColorIndex = this.getColorIndexFromRGB(boardPixel[0], boardPixel[1], boardPixel[2]);
+
+				if(pixelColorIndex !== boardPixelColorIndex){
+					this.chooseColor(pixelColorIndex);
+					this.placeTile(boardX, boardY);
+					return [boardX, boardY];	// break
+				}
+			}
 		}
 
 		return false;
@@ -363,9 +362,11 @@ class AutoPlacer {
 						break;
 					case 1:
 						self.captchaVisible = self.checkCaptchaVisibility(function(){
-							let result = self.placeRandomTile();
+							let result = self.placeNextTile();
 							if(result){
 								console.log(`Attempting to place tile at (${result[0]}, ${result[1]})`);
+							}else{
+								console.log("Unable to place tile, the image may be complete");
 							}
 						}, function(){
 							if(!(self.captchaVisible)){
