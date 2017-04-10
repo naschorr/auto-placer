@@ -74,9 +74,14 @@ class AutoPlacer {
 
 		let img = new Image();
 		img.onload = function(){
-			canvas.width = img.width;
-			canvas.height = img.height;
+			let width = img.width;
+			let height = img.height;
+
+			canvas.width = width;
+			canvas.height = height;
 			ctx.drawImage(img, 0, 0);
+			/* Center the board on the target location */
+			self.centerBoardOn(self.x + width / 2, self.y + height / 2);
 			/* Go into the main loop once the image is drawn onto the canvas */
 			self.main();
 		};
@@ -85,6 +90,44 @@ class AutoPlacer {
 		img.src = imageUrl;
 
 		return ctx;
+	}
+
+	/* Centers the board on the provided coordinates */
+	centerBoardOn(x, y){
+		if(this.isReddit){
+			console.log("/r/Place shut down, so I'm not going to bother with this logic");
+		}else if(this.isPxls){
+			let boardWidth = this.place.width;
+			let boardHeight = this.place.height;
+
+			/* Clamp x and y */
+			x = Math.max(0, Math.min(boardWidth, x));
+			y = Math.max(0, Math.min(boardHeight, y));
+
+			/* pxls.space's centerBoard(x, y) method doesn't seem to work, so do it manually */
+			let halfWidth = boardWidth / 2;
+			if(x < halfWidth){
+				x = halfWidth - x;
+			}else{
+				x = -halfWidth - x;
+			}
+			this.place.panX = x;
+
+			let halfHeight = boardHeight / 2;
+			if(y < halfHeight){
+				y = halfHeight - y;
+			}else{
+				y = -halfHeight - y;
+			}
+			this.place.panY = y;
+
+			/* Todo: Add scale modifier? */
+
+			/* Execute transformation */
+			this.place.updateTransform();
+		}else{
+			console.error("Unspecified system in centerBoardOn()");
+		}
 	}
 
 	/* Gets the canvas context of the place board */
@@ -265,7 +308,7 @@ class AutoPlacer {
 		/* Reddit didn't have captchas, so just ignore the check and run the callback */
 		if(this.isReddit){
 			onHidden();
-			return;
+			return false;
 		}
 
 		/* 	Captcha hierarchy is:
