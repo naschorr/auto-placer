@@ -4,7 +4,7 @@
 class AutoPlacer {
 	constructor(place, imageUrl, x, y){
 		/* Check for required libraries */
-		if(!(this.isRequirementsLoaded())){
+		if(!(this.requirementsLoaded())){
 			return;
 		}
 
@@ -20,6 +20,7 @@ class AutoPlacer {
 
 		/* Init the needed members */
 		this.WAIT_TIME = 3;
+		this.captchaVisible = undefined;
 		this.checkCaptchaRecovered = false;
 		this.system = window.location.hostname;
 		this.isReddit = this.system.includes(this.REDDIT);
@@ -56,8 +57,10 @@ class AutoPlacer {
 	getPaletteColors(){
 		if(this.isReddit){
 			return this.place.DEFAULT_COLOR_PALETTE;
-		}else{
+		}else if(this.isPxls){
 			return this.place.palette;
+		}else{
+			console.error("Unspecified system in getPaletteColors()");
 		}
 	}
 
@@ -91,7 +94,7 @@ class AutoPlacer {
 		}else if(this.isPxls){
 			return this.place.elements.board[0].getContext("2d");
 		}else{
-			console.log(`Unspecified system in getPlaceCanvasCtx()`);
+			console.error("Unspecified system in getPlaceCanvasCtx()");
 		}
 	}
 
@@ -170,7 +173,7 @@ class AutoPlacer {
 		}else if(this.isPxls){
 			this.place.switchColor(colorIndex);
 		}else{
-			console.log(`Unspecified system in chooseColor()`);
+			console.error("Unspecified system in chooseColor()");
 		}
 	}
 
@@ -182,7 +185,7 @@ class AutoPlacer {
 		}else if(this.isPxls){
 			this.place.attemptPlace(x, y);
 		}else{
-			console.log(`Unspecified system in placeTile()`);
+			console.error("Unspecified system in placeTile()");
 		}
 	}
 
@@ -223,7 +226,7 @@ class AutoPlacer {
 		}else if(this.isPxls){
 			return document.body.getElementsByClassName("cooldown-timer")[0].textContent;
 		}else{
-			console.log(`Unspecified system in getTimerText()`);
+			console.error("Unspecified system in getTimerText()");
 		}
 	}
 
@@ -255,7 +258,7 @@ class AutoPlacer {
 				self.place.initSocket();
 			}, 5 * 1000);
 		}else{
-			console.log(`Unspecified system in reconnect()`);
+			console.error("Unspecified system in reconnect()");
 		}
 	}
 
@@ -274,19 +277,19 @@ class AutoPlacer {
 				return 2;
 			}
 		}else{
-			console.log(`Unspecified system in getConnectionState()`);
+			console.error("Unspecified system in getConnectionState()");
 		}
 	}
 
 	/* Detects if a captcha is currently on screen or not, execute a callback if it's hidden */
-	checkCaptchaVisibility(onHidden){
+	checkCaptchaVisibility(onHidden, onVisible){
 		/* Reddit didn't have captchas, so just ignore the check and run the callback */
 		if(this.isReddit){
 			onHidden();
 			return;
 		}
 
-		/* Captcha hierarchy is:
+		/* 	Captcha hierarchy is:
 			<div>
 				<div></div>
 				<div>
@@ -301,14 +304,19 @@ class AutoPlacer {
 		let iframeGrandparentElement = iframeJqObj.parent().parent().get(0);
 
 		try{
+			let visibility;
 			if(iframeGrandparentElement.style.visibility === "hidden"){
 				onHidden();
+				visibility = false;
 			}else{
-				console.log("Captcha visible");
+				onVisible();
+				visibility = true;
 			}
 
 			/* Reset the flag on successful captcha check */
 			this.checkCaptchaRecovered = false;
+
+			return visibility;
 		}
 		catch (e){
 			if (e instanceof TypeError){
@@ -335,7 +343,7 @@ class AutoPlacer {
 				}
 
 			}else{
-				throw new Error("Unhandled error in checkCaptchaVisibility()");
+				throw new Error(`Unhandled error in checkCaptchaVisibility(): ${e}`);
 			}
 		}
 	}
@@ -345,17 +353,23 @@ class AutoPlacer {
 		let self = this;
 		setTimeout(function(){
 			let waitSeconds = self.getSecondsInTimer() + 1;	// Extra second to make sure timer has fully elapsed
-			console.log(`Waiting ${waitSeconds} s`);
+			if(waitSeconds > 1){
+				console.log(`Waiting ${waitSeconds} s`);
+			}
 			setTimeout(function(){
 				switch(self.getConnectionState()){
 					case 0:
 						self.reconnect();
 						break;
 					case 1:
-						self.checkCaptchaVisibility(function(){
+						self.captchaVisible = self.checkCaptchaVisibility(function(){
 							let result = self.placeRandomTile();
 							if(result){
-								console.log(`Placing tile at (${result[0]}, ${result[1]})`);
+								console.log(`Attempting to place tile at (${result[0]}, ${result[1]})`);
+							}
+						}, function(){
+							if(!(self.captchaVisible)){
+								console.log("Captcha visible");
 							}
 						});
 						break;
