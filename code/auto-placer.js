@@ -109,7 +109,7 @@ class AutoPlacer {
 			if(x < halfWidth){
 				x = halfWidth - x;
 			}else{
-				x = -halfWidth - x;
+				x = -1 * (x - halfWidth);
 			}
 			this.place.panX = x;
 
@@ -117,7 +117,7 @@ class AutoPlacer {
 			if(y < halfHeight){
 				y = halfHeight - y;
 			}else{
-				y = -halfHeight - y;
+				y = -1 * (y - halfHeight);
 			}
 			this.place.panY = y;
 
