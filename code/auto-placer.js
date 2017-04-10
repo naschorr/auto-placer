@@ -98,26 +98,6 @@ class AutoPlacer {
 		}
 	}
 
-	/* Compares two pixels, returns true if equal, false if not */
-	comparePixels(pixelA, pixelB){
-		/* http://stackoverflow.com/a/14853974 */
-		if(!pixelA || !pixelB){
-			return false;
-		}
-
-		if(pixelA.length !== pixelB.length){
-			return false;
-		}
-
-		for(let index = 0; index < pixelA.length; index++){
-			if(pixelA[index] !== pixelB[index]){
-				return false;
-			}
-		}
-
-		return true;
-	}
-
 	/* Gets a single pixel's RGBA array from the given canvas context */
 	getPixelFromCanvasCtx(canvasCtx, x, y){
 		let canvasWidth = canvasCtx.canvas.clientWidth;
@@ -189,7 +169,7 @@ class AutoPlacer {
 		}
 	}
 
-	/* Places the next tile on the board (right -> left, top -> bottom) */
+	/* Places the next tile on the board (left -> right, top -> bottom) */
 	placeNextTile(){
 		let canvasWidth = this.canvasCtx.canvas.clientWidth;
 		let canvasHeight = this.canvasCtx.canvas.clientHeight;
