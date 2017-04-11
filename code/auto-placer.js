@@ -307,7 +307,9 @@ class AutoPlacer {
 	checkCaptchaVisibility(onHidden, onVisible){
 		/* Reddit didn't have captchas, so just ignore the check and run the callback */
 		if(this.isReddit){
-			onHidden();
+			if(onHidden){
+				onHidden();
+			}
 			return false;
 		}
 
@@ -328,10 +330,14 @@ class AutoPlacer {
 		try{
 			let visibility;
 			if(iframeGrandparentElement.style.visibility === "hidden"){
-				onHidden();
+				if(onHidden){
+					onHidden();
+				}
 				visibility = false;
 			}else{
-				onVisible();
+				if(onVisible){
+					onVisible();
+				}
 				visibility = true;
 			}
 
@@ -358,6 +364,7 @@ class AutoPlacer {
 					}
 					finally{
 						this.checkCaptchaRecovered = true;
+						return false;
 					}
 
 				}else{
