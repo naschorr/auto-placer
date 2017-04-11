@@ -402,7 +402,9 @@ class AutoPlacer {
 							}
 						}, function(){
 							if(!(self.captchaVisible)){
-								console.log("Captcha visible");
+								let notificationText = "Captcha Visible";
+								console.log(notificationText);
+								new Notification(notificationText);
 							}
 						});
 						break;
