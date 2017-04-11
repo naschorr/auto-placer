@@ -404,7 +404,6 @@ class AutoPlacer {
 							if(!(self.captchaVisible)){
 								let notificationText = "Captcha Visible";
 								console.log(notificationText);
-								document.title = `${self.PIXLS} - ${notificationText}`;
 								new Notification(notificationText);
 							}
 						});
