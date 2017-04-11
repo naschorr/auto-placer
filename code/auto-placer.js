@@ -2,14 +2,14 @@
 /* eslint no-indent: "ignore" */
 
 class AutoPlacer {
-	constructor(place, imageUrl, x, y){
+	constructor(context, imageUrl, x, y){
 		/* Check for required libraries */
 		if(!(this.requirementsLoaded())){
 			return;
 		}
 
 		/* Arg handling */
-		this.place = place;
+		this.context = context;
 		this.x = x;
 		this.y = y;
 
@@ -50,15 +50,17 @@ class AutoPlacer {
 			}
 		}
 
+		/* jQuery technically must be loaded for this to have been called ($.getScript()), but I'd 
+		   eventually like to move away from that */
 		return (checkRequirement("jQuery") && checkRequirement("Color"));
 	}
 
 	/* Gets the array of palette colors available */
 	getPaletteColors(){
 		if(this.isReddit){
-			return this.place.DEFAULT_COLOR_PALETTE;
+			return this.context.DEFAULT_COLOR_PALETTE;
 		}else if(this.isPxls){
-			return this.place.palette;
+			return this.context.palette;
 		}else{
 			console.error("Unspecified system in getPaletteColors()");
 		}
@@ -97,8 +99,8 @@ class AutoPlacer {
 		if(this.isReddit){
 			console.log("/r/Place shut down, so I'm not going to bother with this logic");
 		}else if(this.isPxls){
-			let boardWidth = this.place.width;
-			let boardHeight = this.place.height;
+			let boardWidth = this.context.width;
+			let boardHeight = this.context.height;
 
 			/* Clamp x and y */
 			x = Math.max(0, Math.min(boardWidth, x));
@@ -111,7 +113,7 @@ class AutoPlacer {
 			}else{
 				x = -1 * (x - halfWidth);
 			}
-			this.place.panX = x;
+			this.context.panX = x;
 
 			let halfHeight = boardHeight / 2;
 			if(y < halfHeight){
@@ -119,25 +121,25 @@ class AutoPlacer {
 			}else{
 				y = -1 * (y - halfHeight);
 			}
-			this.place.panY = y;
+			this.context.panY = y;
 
 			/* Todo: Add scale modifier? */
 
 			/* Execute transformation */
-			this.place.updateTransform();
+			this.context.updateTransform();
 		}else{
 			console.error("Unspecified system in centerBoardOn()");
 		}
 	}
 
 	/* Gets the canvas context of the place board */
-	getPlaceCanvasCtx(){
+	getBoardCanvasCtx(){
 		if(this.isReddit){
 			console.log("/r/Place shut down, so I'm not going to bother with this logic");
 		}else if(this.isPxls){
-			return this.place.elements.board[0].getContext("2d");
+			return this.context.elements.board[0].getContext("2d");
 		}else{
-			console.error("Unspecified system in getPlaceCanvasCtx()");
+			console.error("Unspecified system in getBoardCanvasCtx()");
 		}
 	}
 
@@ -192,9 +194,9 @@ class AutoPlacer {
 	/* Sets the color of the next tile to be placed */
 	chooseColor(colorIndex){
 		if(this.isReddit){
-			this.place.setColor(colorIndex);
+			this.context.setColor(colorIndex);
 		}else if(this.isPxls){
-			this.place.switchColor(colorIndex);
+			this.context.switchColor(colorIndex);
 		}else{
 			console.error("Unspecified system in chooseColor()");
 		}
@@ -204,9 +206,9 @@ class AutoPlacer {
 	/* Places a tile at the specified coordinates */
 	placeTile(x, y){
 		if(this.isReddit){
-			this.place.drawTile(x, y);
+			this.context.drawTile(x, y);
 		}else if(this.isPxls){
-			this.place.attemptPlace(x, y);
+			this.context.attemptPlace(x, y);
 		}else{
 			console.error("Unspecified system in placeTile()");
 		}
@@ -226,7 +228,7 @@ class AutoPlacer {
 
 				let boardX = x + this.x;
 				let boardY = y + this.y;
-				let boardPixel = this.getPixelFromCanvasCtx(this.getPlaceCanvasCtx(), boardX, boardY);
+				let boardPixel = this.getPixelFromCanvasCtx(this.getBoardCanvasCtx(), boardX, boardY);
 				let pixelColorIndex = this.getColorIndexFromRGB(pixel[0], pixel[1], pixel[2]);
 				let boardPixelColorIndex = this.getColorIndexFromRGB(boardPixel[0], boardPixel[1], boardPixel[2]);
 
@@ -277,7 +279,7 @@ class AutoPlacer {
 		}else if(this.isPxls){
 			let self = this;
 			setTimeout(function(){
-				self.place.initSocket();
+				self.context.initSocket();
 			}, 5 * 1000);
 		}else{
 			console.error("Unspecified system in reconnect()");
@@ -290,7 +292,7 @@ class AutoPlacer {
 			console.log("/r/Place shut down, so I'm not going to bother with this logic");
 			return 1;
 		}else if(this.isPxls){
-			let socket = this.place.socket;
+			let socket = this.context.socket;
 			if(socket.readyState === socket.CLOSING || socket.readyState === socket.CLOSED){
 				return 0;
 			}else if(socket.readyState === socket.OPEN){
